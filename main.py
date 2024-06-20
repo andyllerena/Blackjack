@@ -14,52 +14,83 @@ from art import logo
 from replit import clear
 import random 
 
-choice = input("Do you want to play a game of Blackjack? Type 'y' or 'n':").lower()
-
-print(logo)
-
-is_playing = True 
-
 cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
-user_hand = []
-cpu_hand = []
-user_total = 0
-comp_total = 0
 
-random_user_card = random.sample(cards,2)
-random_cpu_card = random.sample(cards,1)
-user_hand.extend(random_user_card)
-cpu_hand.extend(random_cpu_card)
+def deal_cards():
+  while len(user_hand) < 2:
+    random_card = random.choice(cards)
+    user_hand.append(random_card)
 
-if choice == 'y':
-  total = sum(user_hand)
-  if total == 21:
-    print ("You win :)")
-  print(f"Your cards: {user_hand}, current score: {total}\nComputer's first card: {cpu_hand}")
+  while len(cpu_hand) < 1:
+    random_card = random.choice(cards)
+    cpu_hand.append(random_card)
 
-while user_total <= 21 and choice != 'n':
-  choice = input("Type 'y' to get another card, type 'n' to pass:")
-  if choice == 'y':
-      random_user_card = random.sample(cards,1)
-      user_hand.extend(random_user_card)
-      user_total = sum(user_hand)
-      if user_total == 21:
-        print ("You win :)")
+def card_counter(hand):
+  total = sum(hand)
+  return total
+
+def game_rules():
+  clear()
+  print(logo)
+  deal_cards()
+  user_total = card_counter(user_hand)
+  comp_total = card_counter(cpu_hand)
+  print(f"User hand: {user_hand}, Current score: {user_total}\nCpu Hand: {cpu_hand}, Current score: {comp_total} ")
+
+  while user_total <= 21:
+      choice = input("Do you want to hit or stand? Type 'h' or 's': ").lower()
+      if choice == 'h':
+        random_card = random.choice(cards)
+        user_hand.append(random_card)
+        user_total = card_counter(user_hand)
+        print(f"Your hand: {user_hand}, Current score: {user_total}\nFinal Cpu Hand: {cpu_hand}, Final score: {comp_total} ")
+
+        if user_total > 21:
+          print("You lose!")
         
-      print(f"Your cards: {user_hand}, current score: {user_total}\nComputer's first card: {cpu_hand}")
-      if user_total > 21:
-        print ("You lose :(")
+      elif choice == 's':
+        break
+      else:
+       print("Please enter a valid input Type 'h' or 's' ")
 
-while comp_total <= 21:
-  random_cpu_card = random.sample(cards,1)
-  cpu_hand.extend(random_cpu_card)
-  comp_total = sum(cpu_hand)
-  if comp_total == 21 and comp_total>user_total:
-    print ("You lose :)\n")
+  while comp_total < 17:
+    random_card = random.choice(cards)
+    cpu_hand.append(random_card)
+    comp_total = card_counter(cpu_hand)
 
-print(f"Your final: {user_hand}, current score: {user_total}\nComputer's final hand: {cpu_hand}, final score: {comp_total}")
-print("You win :)")
+  print(f"Final User hand: {user_hand}, Final score: {user_total}\nCpu Hand: {cpu_hand}, Current score: {comp_total} ")
+
+  if comp_total > 21 or user_total > comp_total:
+    print("You win!")
+  elif user_total < comp_total:
+    print("You lose!")
+  else:
+    print("It's a draw!")
+    
+  
+while True:
+  choice = input("Do you want to play a game of Blackjack? Type 'y' or 'n':").lower()
+  if choice == 'y':
+    user_hand = []
+    cpu_hand = []
+    game_rules()
+  elif choice == 'n':
+    print("Goodbye!")
+    break
+  else:
+    print("Please enter a valid input Type 'y' or 'n' ")
+    
+  
+
+
+
+
+
+    
+    
+  
+
 
 
 
